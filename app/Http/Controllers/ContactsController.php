@@ -57,7 +57,7 @@ class ContactsController extends Controller
         return [
             'name' => "required",
             'email'=> "required|email",
-            'birthday'=> "required",
+            'birthday'=> "required|date_format:m/d/Y",
             'company' => "required"
         ];
     }

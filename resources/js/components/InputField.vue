@@ -13,7 +13,8 @@ export default {
         'name',
         'label',
         'placeholder',
-        'errors'
+        'errors',
+        'data'
     ],
 
     data: function(){
@@ -48,6 +49,12 @@ export default {
             return {
                 'error-field': this.hasError
             }
+        }
+    },
+
+    watch:{
+        data:function(val){
+            this.value = val
         }
     }
 }

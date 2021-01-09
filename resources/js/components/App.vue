@@ -25,7 +25,7 @@
           <p class="font-bold uppercase text-gray-500 text-xs pt-12">General</p>
 
           <!-- contact link -->
-          <router-link to="" class="flex items-center py-2 hover:text-blue-600">
+          <router-link to="/contacts" class="flex items-center py-2 hover:text-blue-600">
 
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="fill-current text-blue-600 w-5 h-5">
             <path class="st0" d="M20 2h-1V1c0-.6-.4-1-1-1s-1 .4-1 1v1h-4V1c0-.6-.4-1-1-1s-1 
@@ -43,7 +43,7 @@
           </router-link>
 
           <!-- Birthday link -->
-          <router-link to="" class="flex items-center py-2 hover:text-blue-600">
+          <router-link to="/contacts/birthdays" class="flex items-center py-2 hover:text-blue-600">
 
             <svg viewBox="0 0 24 24" class="fill-current text-blue-600 w-5 h-5">
               <path d="M12.1 6.8c1.2 0 2.1-1 2.1-2.1 0-.4-.1-.8-.3-1.1L12.1.5l-1.8
@@ -83,9 +83,7 @@
           <div>
             Latest Contacts
           </div>
-          <div class="rounded-full border border-gray-400 text-white bg-blue-400 w-10 h-10 flex items-center justify-center">
-            VG
-          </div>
+          <user-circle :name="user.name"/>
         </div>
 
         <div class=" flex flex-col overflow-y-hidden flex-1">
@@ -98,7 +96,12 @@
 </template>
 
 <script>
+import UserCircle from "./UserCircle"
 export default {
+
+  components:{
+    UserCircle
+  },
 
   props:[
     'user'

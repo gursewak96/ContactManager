@@ -1,17 +1,30 @@
 <template>
-    <div>
+    <div v-if="isLoading" class="flex h-full justify-center items-center">
+        <img v-if="isLoading" :src="spinner" class="max-w-sm block"/>
+    </div>
+    <div v-else>
         <div class="flex justify-between">
-            <div class="text-blue-400">
+            <a href="#" class="text-blue-400" @click.prevent="$router.back()">
                 &lt; Back
+            </a>
+            <div class="relative">
+                <router-link :to="'/contacts/' + this.contact.contact_id + '/edit'" class="px-4 py-2 rounded text-sm font-bold border border-green-500 text-green-500 mr-2">Edit</router-link>
+                <a href="#" class="px-4 py-2 rounded text-sm font-bold border border-red-500 text-red-500"
+                    @click.prevent="modal = ! modal">Delete</a>
+                <div v-if="modal" class="absolute bg-blue-900 text-white rounded-lg z-20 p-8 w-64 right-0 mt-2 mr-6">
+                    <p>Are you sure you want to delete this contact?</p>
+
+                    <div class="flex items-center mt-6 justify-end">
+                        <button @click="modal =! modal" class="text-white pr-4">Cancal</button>
+                        <button class="px-4 py-2 bg-red-500 rounded text-sm font-bold text-white" @click="destroy">Delete</button>
+                    </div>
+                </div>
             </div>
-            <div>
-                <router-link :to="'/contacts/' + this.contact.id + '/edit'" class="px-4 py-2 rounded text-sm font-bold border border-green-500 text-green-500 mr-2">Edit</router-link>
-                <a href="#" class="px-4 py-2 rounded text-sm font-bold border border-red-500 text-red-500">Delete</a>
-            </div>
+             <div v-if="modal" @click="modal = !modal" class="bg-black opacity-25 absolute right-0 left-0 bottom-0 top-0 z-10"></div>
         </div>
         <div class="flex items-center pt-6">
-            <div>VG</div>
-            <p class="pl-5">{{contact.name}}</p>
+            <user-circle :name="contact.name"/>
+            <p class="pl-5 font-bold text-xl">{{contact.name}}</p>
         </div>
 
         <p class="pt-6 text-gray-600 font-bold uppercase text-sm">Company</p>
@@ -28,11 +41,30 @@
 </template>
 
 <script>
-export default {
+import UserCircle from '../components/UserCircle.vue'
 
+export default {
+    components:{
+        UserCircle
+    },
     data(){
         return {
-            contact: null,
+            contact:null,
+            isLoading: true,
+            spinner : "http://localhost:8000/images/spinner.gif",
+            modal: false,
+        }
+    },
+
+    methods:{
+        destroy: function(){
+            axios.delete("/api/contacts/"+this.$route.params.id)
+                .then(response=>{
+                    this.$router.push('/contacts');
+                    console.log(response);
+                }).catch(error=>{
+                    alert("Internal Error. Unable to delete contact.");
+                })
         }
     },
 
@@ -40,8 +72,12 @@ export default {
         axios.get('/api/contacts/' + this.$route.params.id)
             .then(response=>{
                 this.contact = response.data.data;
+                this.isLoading = false
             }).catch(err=>{
-
+                this.isLoading = false;
+                if(err.response.status==404)
+                    this.$router.push('/contacts');
+                
             })
     }
 }
